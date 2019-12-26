@@ -22,12 +22,14 @@ public class StudentEndpoint {
         this.dateUtil = dateUtil;
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+//    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping // mesma coisa que o de cima
     public ResponseEntity<?> listAll() {
         return new ResponseEntity<>(Student.students, HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.GET, path = "/{id}")
+//    @RequestMapping(method = RequestMethod.GET, path = "/{id}")
+    @GetMapping(path = "/{id}") // mesma coisa que o de cima
     public ResponseEntity<?> getStudentId(@PathVariable("id") int id) {
         // --- temporário
         Student student = new Student();
@@ -41,9 +43,25 @@ public class StudentEndpoint {
             return new ResponseEntity<>(Student.students.get(index), HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+//    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping // mesma coisa que o de cima
     public ResponseEntity<?> save(@RequestBody Student student) {
         Student.students.add(student);
         return new ResponseEntity<>(student, HttpStatus.OK);
+    }
+
+//    @RequestMapping(method = RequestMethod.DELETE)
+    @DeleteMapping // mesma coisa que o de cima
+    public ResponseEntity<?> delete(@RequestBody Student student) {
+        Student.students.remove(student);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+//    @RequestMapping(method = RequestMethod.PUT)
+    @PutMapping // mesma coisa que o de cima
+    public ResponseEntity<?> update(@RequestBody Student student) {
+        int index = Student.students.indexOf(student);
+        Student.students.set(index, student);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
