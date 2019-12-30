@@ -1,6 +1,7 @@
 package br.com.devdojo.endpoint;
 
 import br.com.devdojo.error.CustomErrorType;
+import br.com.devdojo.error.ResourceNotFoundException;
 import br.com.devdojo.model.Student;
 import br.com.devdojo.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,21 +19,18 @@ public class StudentEndpoint {
         this.studentDAO = studentDAO;
     }
 
-//    @RequestMapping(method = RequestMethod.GET)
+    //    @RequestMapping(method = RequestMethod.GET)
     @GetMapping // mesma coisa que o de cima
     public ResponseEntity<?> listAll() {
         return new ResponseEntity<>(studentDAO.findAll(), HttpStatus.OK);
     }
 
-//    @RequestMapping(method = RequestMethod.GET, path = "/{id}")
+    //    @RequestMapping(method = RequestMethod.GET, path = "/{id}")
     @GetMapping(path = "/{id}") // mesma coisa que o de cima
     public ResponseEntity<?> getStudentId(@PathVariable("id") Long id) {
-        if (studentDAO.findById(id).isPresent()) {
-            Student student = studentDAO.findById(id).get();
-            return new ResponseEntity<>(student, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(new CustomErrorType("Student not found"), HttpStatus.NOT_FOUND);
-        }
+        verifyStudentExists(id);
+        Student student = studentDAO.findById(id).get();
+        return new ResponseEntity<>(student, HttpStatus.OK);
     }
 
     @GetMapping(path = "/findByName/{name}")
@@ -40,24 +38,31 @@ public class StudentEndpoint {
         return new ResponseEntity<>(studentDAO.findByNameIgnoreCaseContaining(name), HttpStatus.OK);
     }
 
-//    @RequestMapping(method = RequestMethod.POST)
+    //    @RequestMapping(method = RequestMethod.POST)
     @PostMapping // mesma coisa que o de cima
     public ResponseEntity<?> save(@RequestBody Student student) {
         return new ResponseEntity<>(studentDAO.save(student), HttpStatus.CREATED);
     }
 
-//    @RequestMapping(method = RequestMethod.DELETE)
+    //    @RequestMapping(method = RequestMethod.DELETE)
 //    @DeleteMapping // mesma coisa que o de cima
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
+        verifyStudentExists(id);
         studentDAO.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-//    @RequestMapping(method = RequestMethod.PUT)
+    //    @RequestMapping(method = RequestMethod.PUT)
     @PutMapping // mesma coisa que o de cima
     public ResponseEntity<?> update(@RequestBody Student student) {
+        verifyStudentExists(student.getId());
         studentDAO.save(student);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    private void verifyStudentExists(Long id) {
+        if (!studentDAO.findById(id).isPresent())
+            throw new ResourceNotFoundException("Student not found by ID: " + id);
     }
 }
