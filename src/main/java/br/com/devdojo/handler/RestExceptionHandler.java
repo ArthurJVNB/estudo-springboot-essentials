@@ -1,14 +1,18 @@
 package br.com.devdojo.handler;
 
+import br.com.devdojo.error.ErrorDetails;
 import br.com.devdojo.error.ResourceNotFoundDetails;
 import br.com.devdojo.error.ResourceNotFoundException;
 import br.com.devdojo.error.ValidationErrorDetails;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.Date;
 import java.util.stream.Collectors;
@@ -19,7 +23,7 @@ import java.util.stream.Collectors;
 
 // O legal de fazer um Handler para personalizar as exceções é que podemos personalizar como a mensagem de erro ficará.
 // Isso ajuda muito para a gente desenvolver a nossa API, assim como ajuda muito quem for usar nossa API.
-public class RestExceptionHandler {
+public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException rnfException) {
         ResourceNotFoundDetails rnfDetails = ResourceNotFoundDetails.Builder.newBuilder()
@@ -32,6 +36,7 @@ public class RestExceptionHandler {
         return new ResponseEntity<>(rnfDetails, HttpStatus.NOT_FOUND);
     }
 
+    /*
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
         String field = exception.getBindingResult().getFieldErrors().stream().map(FieldError::getField).collect(Collectors.joining(", "));
@@ -47,5 +52,37 @@ public class RestExceptionHandler {
                 .fieldMessage(fieldMessage)
                 .build();
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+    */
+
+    /*
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        String field = exception.getBindingResult().getFieldErrors().stream().map(FieldError::getField).collect(Collectors.joining(", "));
+        String fieldMessage = exception.getBindingResult().getFieldErrors().stream().map(FieldError::getDefaultMessage).collect(Collectors.joining(", "));
+
+        ValidationErrorDetails errorDetails = ValidationErrorDetails.Builder.newBuilder()
+                .timestamp(new Date().getTime())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .title("Field validation error")
+                .detail("Field validation error")
+                .developerMessage(exception.getClass().getName())
+                .field(field)
+                .fieldMessage(fieldMessage)
+                .build();
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+    */
+
+    @Override
+    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        ErrorDetails errorDetails = ErrorDetails.Builder.newBuilder()
+                .timestamp(new Date().getTime())
+                .status(status.value())
+                .title("Internal Exception")
+                .detail(ex.getLocalizedMessage())
+                .developerMessage(ex.getClass().getName())
+                .build();
+        return new ResponseEntity<>(errorDetails, headers, status);
     }
 }

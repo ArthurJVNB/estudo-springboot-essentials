@@ -8,7 +8,7 @@ import javax.validation.constraints.NotEmpty;
 public class Student extends AbstractEntity {
     @NotEmpty // Para obrigar que esse valor esteja presente na criação desse objeto para o Spring Boot
     private String name;
-    @NotEmpty
+    @NotEmpty (message = "Precisa colocar o email") // também se pode personalizar a mensagem de erro para o campo
     @Email
     private String email;
 
