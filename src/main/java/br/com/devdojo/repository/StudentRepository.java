@@ -21,6 +21,10 @@ Podemos acrescentar alguns parâmetros ao URL pra ajustar como serão entregues 
 ?page=0&size=10
       ou            ->      Aqui estamos usando as duas configurações juntas. Tanto faz a ordem escrita
 ?size=10&page=0
+?sort=name,asc      ->      Aqui definimos que queremos uma ordenação crescente levando em conta a propriedade "name"
+?sort=name,desc     ->      O mesmo que o de cima, mas agora queremos de forma descendente
+?sort=name,asc&sort=email,desc      ->      Aqui juntamos duas regras de ordenação. A ordenação vai seguindo a ordem
+                                            dada, nesse caso primeiro a propriedade "name" e depois "email"
 */
 public interface StudentRepository extends PagingAndSortingRepository<Student, Long> {
     List<Student> findByNameIgnoreCaseContaining(String name);
