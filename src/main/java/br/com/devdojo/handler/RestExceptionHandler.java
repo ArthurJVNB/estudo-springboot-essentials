@@ -80,7 +80,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 .timestamp(new Date().getTime())
                 .status(status.value())
                 .title("Internal Exception")
-                .detail(ex.getLocalizedMessage())
+                .detail(ex.getMessage())
                 .developerMessage(ex.getClass().getName())
                 .build();
         return new ResponseEntity<>(errorDetails, headers, status);
