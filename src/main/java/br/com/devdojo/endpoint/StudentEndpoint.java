@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("students")
+@RequestMapping("v1")
 public class StudentEndpoint {
     private final StudentRepository studentDAO;
 
@@ -27,13 +27,15 @@ public class StudentEndpoint {
     }
 
     //@RequestMapping(method = RequestMethod.GET)
-    @GetMapping // mesma coisa que o de cima
+    //@GetMapping // mesma coisa que o de cima
+    @GetMapping(path = "protected/students")
     public ResponseEntity<?> listAll(Pageable pageable) {
         return new ResponseEntity<>(studentDAO.findAll(pageable), HttpStatus.OK);
     }
 
     //@RequestMapping(method = RequestMethod.GET, path = "/{id}")
-    @GetMapping(path = "/{id}") // mesma coisa que o de cima
+    //@GetMapping(path = "/{id}") // mesma coisa que o de cima
+    @GetMapping(path = "protected/students/{id}")
     public ResponseEntity<?> getStudentId(@PathVariable("id") Long id, @AuthenticationPrincipal UserDetails userDetails) {
         System.out.println(userDetails);
         verifyStudentExists(id);
@@ -41,13 +43,15 @@ public class StudentEndpoint {
         return new ResponseEntity<>(student, HttpStatus.OK);
     }
 
-    @GetMapping(path = "/findByName/{name}")
+    //@GetMapping(path = "/findByName/{name}")
+    @GetMapping(path = "protected/students/findByName/{name}")
     public ResponseEntity<?> findStudentsByName(@PathVariable String name) {
         return new ResponseEntity<>(studentDAO.findByNameIgnoreCaseContaining(name), HttpStatus.OK);
     }
 
     //@RequestMapping(method = RequestMethod.POST)
-    @PostMapping // mesma coisa que o de cima
+    //@PostMapping // mesma coisa que o de cima
+    @PostMapping(path = "admin/students")
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<?> save(@Valid @RequestBody Student student) {
         return new ResponseEntity<>(studentDAO.save(student), HttpStatus.CREATED);
@@ -55,8 +59,9 @@ public class StudentEndpoint {
 
     //@RequestMapping(method = RequestMethod.DELETE)
     //@DeleteMapping // mesma coisa que o de cima
-    @DeleteMapping(path = "/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    //@DeleteMapping(path = "/{id}")
+    @DeleteMapping(path = "admin/students/{id}")
+    //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         verifyStudentExists(id);
         studentDAO.deleteById(id);
@@ -64,7 +69,8 @@ public class StudentEndpoint {
     }
 
     //@RequestMapping(method = RequestMethod.PUT)
-    @PutMapping // mesma coisa que o de cima
+    //@PutMapping // mesma coisa que o de cima
+    @PutMapping(path = "admin/students")
     public ResponseEntity<?> update(@RequestBody Student student) {
         verifyStudentExists(student.getId());
         studentDAO.save(student);
