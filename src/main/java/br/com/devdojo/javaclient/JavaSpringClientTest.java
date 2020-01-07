@@ -1,5 +1,6 @@
 package br.com.devdojo.javaclient;
 
+import br.com.devdojo.model.PageableResponse;
 import br.com.devdojo.model.Student;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
@@ -26,14 +27,22 @@ public class JavaSpringClientTest {
         System.out.println(forEntity.getBody());
 
         // Recebendo um array de Student (ele não trabalha diretamente com List)
-        Student[] students = restTemplate.getForObject("/", Student[].class);
-        System.out.println(Arrays.toString(students));
+        // OBS: Só irá funcionar sem o pageable
+//        Student[] students = restTemplate.getForObject("/", Student[].class);
+//        System.out.println(Arrays.toString(students));
 
         // Exchange pode ser usado para GET, POST, UPDATE e DELETE
         // Aqui temos a vantagem de podermos customizar como deve ser entregue a resposta, diferentemente da opção acima (getForEntity)
         // Aqui foi personalizado para receber uma lista, ao invés de arrays primitivos
-        ResponseEntity<List<Student>> exchange = restTemplate.exchange("/", HttpMethod.GET, null,
-                new ParameterizedTypeReference<List<Student>>() {});
-        System.out.println(exchange.getBody());
+        // OBS: Da forma que está aqui só irá funcionar sem o pageable
+//        ResponseEntity<List<Student>> exchange = restTemplate.exchange("/", HttpMethod.GET, null,
+//                new ParameterizedTypeReference<List<Student>>() {});
+//        System.out.println(exchange.getBody());
+
+        ResponseEntity<PageableResponse<Student>> exchange = restTemplate.exchange("/?sort=id,desc", HttpMethod.GET, null,
+                new ParameterizedTypeReference<PageableResponse<Student>>() {
+        });
+        System.out.println(exchange);
+
     }
 }
