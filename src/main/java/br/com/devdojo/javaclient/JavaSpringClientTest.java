@@ -15,17 +15,23 @@ public class JavaSpringClientTest {
 
         JavaClientDAO dao = new JavaClientDAO();
 
-        Student student = dao.findById(2);
-        System.out.println(student);
+//        Student student = dao.findById(45);
+//        System.out.println(student);
 
-        List<Student> students = dao.listAll("?page=0&sort=id,desc");
-        System.out.println(students);
+//        List<Student> students = dao.listAll("?page=0&sort=id,desc");
+//        System.out.println(students);
 
-        Student studentPost = new Student();
-        studentPost.setName("Saori");
-        studentPost.setEmail("saori@athena.com");
-        Student savedStudent = dao.save(studentPost);
-        System.out.println(savedStudent);
+//        Student studentPost = new Student();
+//        studentPost.setName("Saori");
+//        studentPost.setEmail("saori@athena.com");
+//        Student savedStudent = dao.save(studentPost);
+//        System.out.println(savedStudent);
+
+//        studentPost.setId(36L);
+//        studentPost.setName("Saori Mitsumasu");
+//        dao.update(studentPost);
+
+        dao.delete(35L);
 
         // Forma monolítica do código acima (antes de refatorar essa classe)
         /*
