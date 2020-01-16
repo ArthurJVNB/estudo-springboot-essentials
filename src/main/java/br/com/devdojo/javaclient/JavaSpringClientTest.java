@@ -21,9 +21,9 @@ public class JavaSpringClientTest {
 //        List<Student> students = dao.listAll("?page=0&sort=id,desc");
 //        System.out.println(students);
 
-//        Student studentPost = new Student();
-//        studentPost.setName("Saori");
-//        studentPost.setEmail("saori@athena.com");
+        Student studentPost = new Student();
+        studentPost.setName("Saori");
+        studentPost.setEmail("saori@athena.com");
 //        Student savedStudent = dao.save(studentPost);
 //        System.out.println(savedStudent);
 
