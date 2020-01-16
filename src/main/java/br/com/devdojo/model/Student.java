@@ -3,6 +3,7 @@ package br.com.devdojo.model;
 import javax.persistence.Entity;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class Student extends AbstractEntity {
