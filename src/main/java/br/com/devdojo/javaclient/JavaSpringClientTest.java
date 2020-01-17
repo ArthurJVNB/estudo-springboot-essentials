@@ -22,16 +22,19 @@ public class JavaSpringClientTest {
 //        System.out.println(students);
 
         Student studentPost = new Student();
-        studentPost.setName("Saori");
-        studentPost.setEmail("saori@athena.com");
+//        studentPost.setName("Saori");
+//        studentPost.setEmail("saori@athena.com");
 //        Student savedStudent = dao.save(studentPost);
 //        System.out.println(savedStudent);
+
+        Student studentSaved = dao.save(studentPost);
+        System.out.println(studentSaved);
 
 //        studentPost.setId(36L);
 //        studentPost.setName("Saori Mitsumasu");
 //        dao.update(studentPost);
 
-        dao.delete(35L);
+//        dao.delete(35L);
 
         // Forma monolítica do código acima (antes de refatorar essa classe)
         /*

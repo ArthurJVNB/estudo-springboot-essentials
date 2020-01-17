@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -13,10 +14,12 @@ import javax.validation.ConstraintViolationException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 // @ExtendWith(SpringExtension.class) // antigo @RunWith(SpringRunner.class)
 // Desde o Spring 2.1 a anotação acima já está inclusa em outras anotações, sendo elas @DataJpaTest, @WebMvcTest e @SpringBootTest
 @DataJpaTest
+//@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // Aqui permite o uso do nosso BD real, mas sempre faz o rollback ao fim de cada teste
 public class StudentRepositoryTest {
     @Autowired
     private StudentRepository studentRepository;
@@ -77,13 +80,28 @@ public class StudentRepositoryTest {
     @Test
     public void createWhenNameIsNullShouldThrowConstraintViolationException() {
         // TODO: Isso não está lançando nenhuma exceção. Ainda estou tentando entender o porquê, pois era pra lançar pelo menos algo
-        Assertions.assertThrows(ConstraintViolationException.class, () -> studentRepository.save(new Student(null, "email@email.com")));
+        assertThrows(
+                ConstraintViolationException.class,
+                () -> studentRepository.save(new Student(null, "email@email.com"))
+        );
     }
 
     @Test
     public void createWhenEmailIsNullShouldThrowConstraintViolationException() {
         Student student = new Student();
         // TODO: Descobrir porque ele não está lançando nenhuma exceção
-        Assertions.assertThrows(ConstraintViolationException.class, () -> studentRepository.save(student));
+        assertThrows(
+                ConstraintViolationException.class,
+                () -> studentRepository.save(student)
+        );
+    }
+
+    @Test
+    public void createWhenEmailIsNotValidShouldThrowConstraintViolationException() {
+        Student student = new Student("usuario", "emailinvalido");
+        assertThrows(
+                ConstraintViolationException.class,
+                () -> studentRepository.save(student)
+        );
     }
 }
